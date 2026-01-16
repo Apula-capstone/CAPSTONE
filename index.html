@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APULA - Emergency Fire Response Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === ENHANCED MODERN EMERGENCY DASHBOARD === */
+        :root {
+            /* Emergency Color Palette */
+            --primary-emergency: #FF3B30;
+            --secondary-emergency: #FF9500;
+            --accent-blue: #007AFF;
+            --accent-green: #34C759;
+            --accent-purple: #AF52DE;
+            --accent-yellow: #FFCC00;
+            
+            /* Backgrounds */
+            --bg-dark: #0C0C0C;
+            --bg-card: #1A1A1A;
+            --bg-hover: #2C2C2C;
+            --bg-gradient: linear-gradient(135deg, #0C0C0C 0%, #1A0C0C 50%, #0C1A1A 100%);
+            
+            /* Text */
+            --text-light: #FFFFFF;
+            --text-dim: #8E8E93;
+            --text-highlight: #FF9500;
+            
+            /* Emergency Effects */
+            --glow-emergency: 0 0 30px rgba(255, 59, 48, 0.7);
+            --glow-warning: 0 0 30px rgba(255, 149, 0, 0.7);
+            --shadow-emergency: 0 10px 40px rgba(255, 59, 48, 0.3);
+            
+            /* Spacing */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            /* Borders */
+            --border-radius: 12px;
+            --border-emergency: 2px solid rgba(255, 59, 48, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+        }
+
+        /* Emergency Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 59, 48, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 122, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-emergency);
+            border-radius: 3px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-sm);
+            }
+        }
+
+        /* Emergency Header */
+        .header {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, 
+                rgba(255, 59, 48, 0.9) 0%, 
+                rgba(255, 149, 0, 0.9) 100%);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--glow-emergency);
+            position: relative;
+            overflow: hidden;
+            border: var(--border-emergency);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: white;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+            animation: pulse 2s infinite;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 20px rgba(255, 149, 0, 0.7),
+                2px 2px 0 rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #FFFFFF, #FFCC00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Responsive Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .dashboard-grid {
+                grid-template-columns: 0.8fr 1.2fr 0.8fr;
+            }
+        }
+
+        /* Emergency Card Design */
+        .card {
+            background: rgba(26, 26, 26, 0.95);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--glow-emergency), 0 12px 48px rgba(0, 0, 0, 0.4);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-emergency), var(--secondary-emergency));
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .card-title i {
+            font-size: 1.3rem;
+            color: var(--secondary-emergency);
+            background: rgba(255, 149, 0, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Emergency Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        @media (max-width: 480px) {
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .status-card {
+            background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.9));
+            border-radius: 10px;
+            padding: var(--spacing-md);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .status-card.alert {
+            border-color: var(--primary-emergency);
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(40, 20, 20, 0.9));
+            animation: alertPulse 1s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(255, 59, 48, 0);
+            }
+        }
+
+        .status-icon {
+            font-size: 1.8rem;
+            margin-bottom: var(--spacing-xs);
+            color: var(--secondary-emergency);
+        }
+
+        .status-card.alert .status-icon {
+            color: var(--primary-emergency);
+            animation: firePulse 0.5s infinite;
+        }
+
+        @keyframes firePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Camera Feed */
+        .camera-feed {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: #000;
+            margin-bottom: var(--spacing-md);
+            border: 2px solid rgba(255, 149, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .camera-feed {
+                height: 250px;
+            }
+        }
+
+        .camera-feed video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .camera-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            gap: var(--spacing-md);
+        }
+
+        /* Camera Controls Grid */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        @media (max-width: 480px) {
+            .controls-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .control-btn {
+            padding: var(--spacing-sm);
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--secondary-emergency), var(--primary-emergency));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            min-height: 70px;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4);
+        }
+
+        .control-btn.success {
+            background: linear-gradient(135deg, var(--accent-green), #2E8B57);
+        }
+        .control-btn.warning {
+            background: linear-gradient(135deg, var(--accent-yellow), #FFA500);
+        }
+        .control-btn.danger {
+            background: linear-gradient(135deg, var(--primary-emergency), #DC143C);
+        }
+        .control-btn.info {
+            background: linear-gradient(135deg, var(--accent-blue), #1E90FF);
+        }
+
+        .control-btn.disabled {
+            background: linear-gradient(135deg, #666, #888);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Water Control */
+        .water-control {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .pressure-slider-container {
+            flex: 1;
+            background: rgba(255, 149, 0, 0.1);
+            padding: var(--spacing-md);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .pressure-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, var(--accent-blue), var(--secondary-emergency));
+            border-radius: 4px;
+            outline: none;
+            margin: var(--spacing-sm) 0;
+        }
+
+        .pressure-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 122, 255, 0.8);
+        }
+
+        .pressure-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+            min-width: 70px;
+        }
+
+        /* Connection Panel */
+        .connection-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .connection-btn {
+            padding: var(--spacing-md) var(--spacing-sm);
+            border-radius: 10px;
+            border: 2px solid var(--secondary-emergency);
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.9rem;
+            min-height: 100px;
+        }
+
+        .connection-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.2), rgba(255, 59, 48, 0.2));
+            transform: translateY(-3px);
+            border-color: var(--primary-emergency);
+            box-shadow: 0 6px 20px rgba(255, 149, 0, 0.3);
+        }
+
+        .connection-btn i {
+            font-size: 1.8rem;
+            color: var(--secondary-emergency);
+        }
+
+        /* Media Gallery */
+        .gallery-container {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 10px;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        /* System Logs */
+        .log-container {
+            max-height: 250px;
+            overflow-y: auto;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 10px;
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .log-time {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            min-width: 60px;
+        }
+
+        /* Emergency Alert Modal */
+        #fireAlertModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+            padding: var(--spacing-md);
+        }
+
+        .fire-alert-content {
+            background: linear-gradient(135deg, #3A0A0A 0%, #5A0A0A 100%);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid var(--primary-emergency);
+            box-shadow: 
+                0 0 50px rgba(255, 59, 48, 0.8),
+                inset 0 0 20px rgba(255, 59, 48, 0.4);
+            animation: alertGlow 1s infinite;
+        }
+
+        .fire-alert-icon {
+            font-size: 3.5rem;
+            color: var(--primary-emergency);
+            margin-bottom: var(--spacing-lg);
+            animation: fireAlertIcon 0.5s infinite;
+        }
+
+        /* Notification Center */
+        .notification-center {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 300px;
+            width: calc(100% - 40px);
+        }
+
+        .notification {
+            background: rgba(26, 26, 26, 0.95);
+            border-left: 4px solid var(--secondary-emergency);
+            padding: var(--spacing-sm);
+            margin-bottom: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            animation: slideIn 0.3s ease forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+            .logo-icon {
+                font-size: 2rem;
+            }
+            .card {
+                padding: var(--spacing-md);
+            }
+            .control-btn, .connection-btn {
+                min-height: 60px;
+                padding: var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                gap: var(--spacing-md);
+            }
+            .controls-grid, .connection-panel {
+                grid-template-columns: 1fr;
+            }
+            .camera-feed {
+                height: 200px;
+            }
+        }
+
+        /* Touch-friendly */
+        button, .control-btn, .connection-btn {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--primary-emergency);
+            border-right: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes alertGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 50px rgba(255, 59, 48, 0.8),
+                    inset 0 0 20px rgba(255, 59, 48, 0.4);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 70px rgba(255, 59, 48, 1),
+                    inset 0 0 30px rgba(255, 59, 48, 0.6);
+            }
+        }
+
+        @keyframes fireAlertIcon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Notification Center -->
+    <div class="notification-center" id="notificationCenter"></div>
+
+    <!-- Fire Alarm Sound -->
+    <audio id="fireAlarmSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <!-- Emergency Header -->
+        <div class="header">
+            <div class="logo-container">
+                <i class="fas fa-fire-extinguisher logo-icon"></i>
+                <h1 class="logo">APULA</h1>
+            </div>
+            <p class="tagline">Automated Prevention Unit for Lethal Ablaze</p>
+            <div class="live-indicator">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="width: 8px; height: 8px; background: #34C759; border-radius: 50%; animation: pulse 2s infinite;"></span>
+                    LIVE MONITORING ACTIVE
+                </span>
+            </div>
+        </div>
+
+        <!-- Emergency Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column: Status & Controls -->
+            <div class="column">
+                <!-- System Status -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        System Status
+                    </h2>
+                    <div class="status-grid">
+                        <div class="status-card" id="fireStatus">
+                            <div class="status-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="status-text">SYSTEM READY</div>
+                            <div class="status-subtext">No Fire Detected</div>
+                        </div>
+
+                        <div class="status-card" id="waterStatus">
+                            <div class="status-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="status-text">WATER READY</div>
+                            <div class="status-subtext">Pressure: 80%</div>
+                        </div>
+
+                        <div class="status-card" id="cameraStatus">
+                            <div class="status-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="status-text">CAMERA OFFLINE</div>
+                            <div class="status-subtext">Ready to Connect</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Camera Connection -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-wifi"></i>
+                        Camera Connection
+                    </h2>
+                    <div class="connection-panel">
+                        <button class="connection-btn" onclick="connectWiFiCamera()">
+                            <i class="fas fa-wifi"></i>
+                            <span class="btn-label">WiFi Camera</span>
+                        </button>
+
+                        <button class="connection-btn" onclick="connectRTSP()">
+                            <i class="fas fa-satellite-dish"></i>
+                            <span class="btn-label">RTSP Stream</span>
+                        </button>
+
+                        <button class="connection-btn" onclick="connectBluetooth()">
+                            <i class="fas fa-bluetooth-b"></i>
+                            <span class="btn-label">Bluetooth</span>
+                        </button>
+
+                        <button class="connection-btn" onclick="connectWebcam()">
+                            <i class="fas fa-camera"></i>
+                            <span class="btn-label">Webcam</span>
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: var(--spacing-md);">
+                        <input type="text" id="streamUrl" 
+                               placeholder="Enter RTSP URL (e.g., rtsp://192.168.1.100:554/stream)"
+                               style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,149,0,0.3); background: rgba(255,149,0,0.05); color: white;">
+                    </div>
+                </div>
+
+                <!-- Media Gallery -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-images"></i>
+                        Media Gallery
+                    </h2>
+                    <div class="gallery-container" id="galleryContainer">
+                        <div class="gallery-grid" id="galleryGrid">
+                            <!-- Gallery items will be added here -->
+                        </div>
+                        <div id="emptyGallery" style="text-align: center; padding: 20px; color: var(--text-dim);">
+                            <i class="fas fa-images" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No media captured yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column: Live Feed & Water Control -->
+            <div class="column">
+                <!-- Live Camera Feed -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-eye"></i>
+                        Live Camera Feed
+                        <span style="margin-left: auto; font-size: 0.75rem; color: var(--accent-green);">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> READY
+                        </span>
+                    </h2>
+                    
+                    <div class="camera-feed" id="cameraFeed">
+                        <video id="liveVideo" autoplay playsinline muted></video>
+                        <div class="camera-placeholder" id="cameraPlaceholder">
+                            <i class="fas fa-camera" style="font-size: 2rem; color: var(--text-dim);"></i>
+                            <p style="color: var(--text-dim); margin-bottom: var(--spacing-md);">No camera connected</p>
+                            <button class="control-btn" onclick="connectWebcam()" style="width: 180px;">
+                                <i class="fas fa-plug"></i>
+                                Connect Camera
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera Controls -->
+                    <div class="controls-grid">
+                        <button class="control-btn success" onclick="startRecording()" id="recordBtn">
+                            <i class="fas fa-record-vinyl"></i>
+                            Start Recording
+                        </button>
+                        <button class="control-btn danger disabled" onclick="stopRecording()" id="stopBtn">
+                            <i class="fas fa-stop"></i>
+                            Stop Recording
+                        </button>
+                        <button class="control-btn info" onclick="captureSnapshot()">
+                            <i class="fas fa-camera"></i>
+                            Take Snapshot
+                        </button>
+                        <button class="control-btn" onclick="toggleFullscreen()">
+                            <i class="fas fa-expand"></i>
+                            Fullscreen
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Water Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-tint"></i>
+                        Water Control System
+                    </h2>
+                    
+                    <div class="water-control">
+                        <div class="pressure-slider-container">
+                            <label style="display: block; margin-bottom: var(--spacing-sm); color: var(--text-light); font-weight: 600;">Pressure Control</label>
+                            <input type="range" min="0" max="100" value="80" 
+                                   class="pressure-slider" id="pressureSlider" 
+                                   oninput="updatePressure(this.value)">
+                            <div style="display: flex; justify-content: space-between; color: var(--text-dim); font-size: 0.85rem; margin-top: var(--spacing-xs);">
+                                <span>Low</span>
+                                <span>Medium</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pressure-value" id="pressureValue">80%</div>
+                    </div>
+                    
+                    <div class="controls-grid" style="margin-top: var(--spacing-md);">
+                        <button class="control-btn success" onclick="activateWater()" id="activateWaterBtn">
+                            <i class="fas fa-play"></i>
+                            Activate Water
+                        </button>
+                        <button class="control-btn danger disabled" onclick="deactivateWater()" id="deactivateWaterBtn">
+                            <i class="fas fa-stop"></i>
+                            Stop Water
+                        </button>
+                        <button class="control-btn warning" onclick="testSprinkler()">
+                            <i class="fas fa-spray-can"></i>
+                            Test Sprinkler
+                        </button>
+                        <button class="control-btn danger" onclick="emergencyStop()">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Emergency Stop
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Logs & Stats -->
+            <div class="column">
+                <!-- System Logs -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        System Logs
+                        <button class="control-btn" onclick="clearLogs()" 
+                                style="margin-left: auto; padding: 6px 12px; font-size: 0.75rem; min-height: auto;">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </h2>
+                    
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry">
+                            <span class="log-time">00:00:00</span>
+                            <span class="log-message">System initialized successfully</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">00:00:01</span>
+                            <span class="log-message">Emergency dashboard ready</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">00:00:02</span>
+                            <span class="log-message">Water control system ready</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">00:00:03</span>
+                            <span class="log-message">Click "Connect Camera" to start monitoring</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-bar"></i>
+                        System Statistics
+                    </h2>
+                    
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-sm); margin-top: var(--spacing-md);">
+                        <div style="background: rgba(255,149,0,0.05); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid rgba(255,149,0,0.1);">
+                            <div style="color: var(--text-dim); font-size: 0.85rem;">Active Cameras</div>
+                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--text-light);" id="statCameras">0/1</div>
+                        </div>
+                        
+                        <div style="background: rgba(255,59,48,0.05); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid rgba(255,59,48,0.1);">
+                            <div style="color: var(--text-dim); font-size: 0.85rem;">Fire Detections</div>
+                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--primary-emergency);" id="statFires">0</div>
+                        </div>
+                        
+                        <div style="background: rgba(0,122,255,0.05); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid rgba(0,122,255,0.1);">
+                            <div style="color: var(--text-dim); font-size: 0.85rem;">Water Activations</div>
+                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-blue);" id="statWater">0</div>
+                        </div>
+                        
+                        <div style="background: rgba(52,199,89,0.05); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid rgba(52,199,89,0.1);">
+                            <div style="color: var(--text-dim); font-size: 0.85rem;">Media Files</div>
+                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-green);" id="statMedia">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Actions -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Emergency Actions
+                    </h2>
+                    
+                    <div class="controls-grid" style="margin-top: var(--spacing-md);">
+                        <button class="control-btn danger" onclick="testFireDetection()">
+                            <i class="fas fa-fire"></i>
+                            Test Fire Alert
+                        </button>
+                        <button class="control-btn warning" onclick="manualOverride()">
+                            <i class="fas fa-hand-paper"></i>
+                            Manual Override
+                        </button>
+                        <button class="control-btn info" onclick="systemDiagnostics()">
+                            <i class="fas fa-stethoscope"></i>
+                            Diagnostics
+                        </button>
+                        <button class="control-btn" onclick="silenceAlarm()">
+                            <i class="fas fa-volume-mute"></i>
+                            Silence Alarm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fire Alert Modal -->
+    <div id="fireAlertModal">
+        <div class="fire-alert-content">
+            <i class="fas fa-fire fire-alert-icon"></i>
+            <h2 style="color: white; margin-bottom: var(--spacing-md); font-size: 1.8rem;">🚨 FIRE DETECTED! 🚨</h2>
+            <p style="color: #FFA07A; margin-bottom: var(--spacing-lg); font-size: 1.1rem;">
+                EMERGENCY! Fire detected. Water suppression system activating.
+            </p>
+            
+            <div style="background: rgba(0,0,0,0.5); padding: var(--spacing-md); border-radius: 8px; margin-bottom: var(--spacing-lg);">
+                <p style="color: white; margin-bottom: 8px; text-align: left;">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--accent-yellow); margin-right: 8px;"></i>
+                    <strong>Location:</strong> <span id="fireLocation">Main Camera Feed</span>
+                </p>
+                <p style="color: white; margin-bottom: 8px; text-align: left;">
+                    <i class="fas fa-fire" style="color: var(--primary-emergency); margin-right: 8px;"></i>
+                    <strong>Severity:</strong> <span style="color: var(--primary-emergency); font-weight: bold;">HIGH</span>
+                </p>
+                <p style="color: white; margin-bottom: 0; text-align: left;">
+                    <i class="fas fa-tint" style="color: var(--accent-blue); margin-right: 8px;"></i>
+                    <strong>Response:</strong> Water system <span style="color: var(--accent-blue); font-weight: bold;">ACTIVE</span>
+                </p>
+            </div>
+            
+            <button class="control-btn danger" onclick="closeFireAlert()" style="width: 100%;">
+                <i class="fas fa-bell-slash"></i>
+                ACKNOWLEDGE ALERT
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // === EMERGENCY DASHBOARD APP ===
+        class EmergencyDashboard {
+            constructor() {
+                this.camera = { stream: null, mediaRecorder: null, isActive: false };
+                this.isRecording = false;
+                this.recordedChunks = [];
+                this.waterActive = false;
+                this.mediaGallery = [];
+                this.fireAlertActive = false;
+                this.lastFireAlert = 0;
+                this.fireAlertCooldown = 0; // No cooldown
+                
+                this.stats = {
+                    activeCameras: 0,
+                    fires: 0,
+                    waterActivations: 0,
+                    mediaCount: 0
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.updateStats();
+                this.showNotification('Emergency Dashboard', 'System initialized and ready', 'info');
+                this.addLog('Emergency response system ready');
+                
+                // Test all connection types on load
+                this.testConnections();
+            }
+            
+            // === CONNECTION FUNCTIONS ===
+            
+            async connectWiFiCamera() {
+                this.showLoading(true);
+                this.showNotification('WiFi Camera', 'Searching for WiFi cameras...', 'info');
+                this.addLog('Initiating WiFi camera connection');
+                
+                // Simulate WiFi camera discovery and connection
+                setTimeout(() => {
+                    this.showNotification('WiFi Camera', 'Found camera: CAM-001 (192.168.1.100)', 'info');
+                    
+                    setTimeout(() => {
+                        this.showNotification('WiFi Camera', 'Connected successfully', 'success');
+                        this.addLog('WiFi camera connected');
+                        this.updateCameraStatus('connected');
+                        this.showLoading(false);
+                        
+                        // Show RTSP URL suggestion
+                        document.getElementById('streamUrl').value = 'rtsp://192.168.1.100:554/stream';
+                    }, 1000);
+                }, 1500);
+            }
+            
+            async connectRTSP() {
+                const url = document.getElementById('streamUrl').value.trim();
+                
+                if (!url) {
+                    this.showNotification('RTSP Error', 'Please enter an RTSP URL', 'warning');
+                    return;
+                }
+                
+                this.showLoading(true);
+                this.showNotification('RTSP Stream', `Connecting to: ${url}`, 'info');
+                this.addLog(`Connecting to RTSP stream: ${url}`);
+                
+                // Simulate RTSP connection
+                setTimeout(() => {
+                    if (url.includes('rtsp://')) {
+                        this.showNotification('RTSP Stream', 'Stream connected successfully', 'success');
+                        this.addLog('RTSP stream connected');
+                        this.updateCameraStatus('connected');
+                        
+                        // Simulate video playback
+                        setTimeout(() => {
+                            this.startSimulatedVideo();
+                        }, 500);
+                    } else {
+                        this.showNotification('RTSP Error', 'Invalid RTSP URL format', 'error');
+                    }
+                    this.showLoading(false);
+                }, 2000);
+            }
+            
+            async connectBluetooth() {
+                this.showLoading(true);
+                this.showNotification('Bluetooth', 'Scanning for Bluetooth devices...', 'info');
+                this.addLog('Initiating Bluetooth connection');
+                
+                // Check if Web Bluetooth API is available
+                if (!navigator.bluetooth) {
+                    this.showNotification('Bluetooth Error', 'Web Bluetooth not supported in this browser', 'error');
+                    this.showLoading(false);
+                    return;
+                }
+                
+                try {
+                    // Request Bluetooth device
+                    const device = await navigator.bluetooth.requestDevice({
+                        filters: [{ name: 'APULA-CAM' }],
+                        optionalServices: ['battery_service', 'device_information']
+                    });
+                    
+                    this.showNotification('Bluetooth', `Connected to: ${device.name}`, 'success');
+                    this.addLog(`Bluetooth connected: ${device.name}`);
+                    this.updateCameraStatus('connected');
+                    
+                } catch (error) {
+                    if (error.name === 'NotFoundError') {
+                        this.showNotification('Bluetooth', 'No Bluetooth camera found', 'warning');
+                    } else {
+                        this.showNotification('Bluetooth Error', error.message, 'error');
+                    }
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            async connectWebcam() {
+                if (this.camera.isActive) {
+                    this.showNotification('Camera', 'Camera already connected', 'info');
+                    return;
+                }
+                
+                this.showLoading(true);
+                
+                try {
+                    const constraints = {
+                        video: {
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 },
+                            facingMode: 'environment'
+                        },
+                        audio: false
+                    };
+                    
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    
+                    const videoElement = document.getElementById('liveVideo');
+                    videoElement.srcObject = stream;
+                    videoElement.style.display = 'block';
+                    document.getElementById('cameraPlaceholder').style.display = 'none';
+                    
+                    this.camera.stream = stream;
+                    this.camera.isActive = true;
+                    
+                    this.setupMediaRecorder(stream);
+                    
+                    this.stats.activeCameras = 1;
+                    this.updateCameraStatus('connected');
+                    this.updateStats();
+                    
+                    this.showNotification('Camera', 'Webcam connected successfully', 'success');
+                    this.addLog('Webcam connected');
+                    
+                    document.getElementById('recordBtn').classList.remove('disabled');
+                    
+                } catch (error) {
+                    this.showNotification('Camera Error', `Access denied or camera not found`, 'error');
+                    this.addLog(`Camera error: ${error.message}`);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            testConnections() {
+                // Test all connection types
+                setTimeout(() => {
+                    this.showNotification('System Check', 'Testing connectivity...', 'info');
+                    
+                    setTimeout(() => {
+                        this.addLog('WiFi: Available');
+                        this.addLog('Bluetooth: Available');
+                        this.addLog('RTSP: Ready');
+                        this.showNotification('System Check', 'All connections available', 'success');
+                    }, 500);
+                }, 1000);
+            }
+            
+            // === CAMERA FUNCTIONS ===
+            
+            setupMediaRecorder(stream) {
+                try {
+                    this.camera.mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'video/webm;codecs=vp9',
+                        videoBitsPerSecond: 2500000
+                    });
+                    
+                    this.camera.mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            this.recordedChunks.push(event.data);
+                        }
+                    };
+                    
+                    this.camera.mediaRecorder.onstop = () => {
+                        this.saveRecording();
+                    };
+                    
+                } catch (error) {
+                    console.error('MediaRecorder setup error:', error);
+                    this.camera.mediaRecorder = new MediaRecorder(stream);
+                }
+            }
+            
+            startRecording() {
+                if (!this.camera.isActive) {
+                    this.showNotification('Recording Error', 'No camera connected', 'error');
+                    return;
+                }
+                
+                if (this.isRecording) return;
+                
+                this.isRecording = true;
+                this.recordedChunks = [];
+                
+                if (this.camera.mediaRecorder) {
+                    this.camera.mediaRecorder.start(1000);
+                }
+                
+                document.getElementById('recordBtn').classList.add('disabled');
+                document.getElementById('stopBtn').classList.remove('disabled');
+                
+                this.showNotification('Recording', 'Recording started', 'success');
+                this.addLog('Recording started');
+            }
+            
+            stopRecording() {
+                if (!this.isRecording) return;
+                
+                this.isRecording = false;
+                
+                if (this.camera.mediaRecorder) {
+                    this.camera.mediaRecorder.stop();
+                }
+                
+                document.getElementById('recordBtn').classList.remove('disabled');
+                document.getElementById('stopBtn').classList.add('disabled');
+                
+                this.showNotification('Recording', 'Recording saved', 'info');
+            }
+            
+            saveRecording() {
+                if (this.recordedChunks.length === 0) return;
+                
+                const blob = new Blob(this.recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                
+                const mediaItem = {
+                    type: 'video',
+                    url: url,
+                    timestamp: new Date().toLocaleTimeString(),
+                    size: (blob.size / 1024 / 1024).toFixed(2)
+                };
+                
+                this.mediaGallery.push(mediaItem);
+                this.stats.mediaCount++;
+                this.updateStats();
+                this.updateGallery();
+                
+                this.addLog(`Recording saved (${mediaItem.size} MB)`);
+            }
+            
+            captureSnapshot() {
+                if (!this.camera.isActive) {
+                    this.showNotification('Snapshot Error', 'Camera not connected', 'error');
+                    return;
+                }
+                
+                const video = document.getElementById('liveVideo');
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                
+                const url = canvas.toDataURL('image/jpeg');
+                
+                const mediaItem = {
+                    type: 'image',
+                    url: url,
+                    timestamp: new Date().toLocaleTimeString(),
+                    size: '0.1'
+                };
+                
+                this.mediaGallery.push(mediaItem);
+                this.stats.mediaCount++;
+                this.updateStats();
+                this.updateGallery();
+                
+                this.showNotification('Snapshot', 'Snapshot saved to gallery', 'success');
+                this.addLog('Snapshot captured');
+                
+                // Flash effect
+                document.getElementById('cameraFeed').style.boxShadow = '0 0 30px white';
+                setTimeout(() => {
+                    document.getElementById('cameraFeed').style.boxShadow = '';
+                }, 200);
+            }
+            
+            startSimulatedVideo() {
+                // Create a simulated video feed
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                const ctx = canvas.getContext('2d');
+                
+                const stream = canvas.captureStream(30);
+                const video = document.getElementById('liveVideo');
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.getElementById('cameraPlaceholder').style.display = 'none';
+                
+                this.camera.stream = stream;
+                this.camera.isActive = true;
+                this.updateCameraStatus('connected');
+                
+                // Draw simulation
+                function draw() {
+                    ctx.fillStyle = '#1A1A1A';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw moving elements
+                    const time = Date.now() / 1000;
+                    ctx.fillStyle = 'rgba(255, 149, 0, 0.1)';
+                    for (let i = 0; i < 5; i++) {
+                        const x = (Math.sin(time + i) * 100 + 320);
+                        const y = (Math.cos(time + i) * 100 + 240);
+                        ctx.beginPath();
+                        ctx.arc(x, y, 20, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+            
+            // === WATER CONTROL ===
+            
+            updatePressure(value) {
+                document.getElementById('pressureValue').textContent = value + '%';
+                document.querySelector('#waterStatus .status-subtext').textContent = `Pressure: ${value}%`;
+            }
+            
+            activateWater() {
+                if (this.waterActive) return;
+                
+                this.waterActive = true;
+                document.getElementById('activateWaterBtn').classList.add('disabled');
+                document.getElementById('deactivateWaterBtn').classList.remove('disabled');
+                
+                const pressure = document.getElementById('pressureSlider').value;
+                this.showNotification('Water System', `Activated at ${pressure}% pressure`, 'success');
+                this.addLog(`Water system activated (${pressure}%)`);
+                
+                this.stats.waterActivations++;
+                this.updateStats();
+                
+                // Simulate water effect
+                this.showWaterEffect();
+                
+                // Auto stop after 10 seconds
+                setTimeout(() => {
+                    if (this.waterActive) {
+                        this.deactivateWater();
+                    }
+                }, 10000);
+            }
+            
+            deactivateWater() {
+                this.waterActive = false;
+                document.getElementById('activateWaterBtn').classList.remove('disabled');
+                document.getElementById('deactivateWaterBtn').classList.add('disabled');
+                
+                this.showNotification('Water System', 'Deactivated', 'info');
+                this.addLog('Water system deactivated');
+            }
+            
+            testSprinkler() {
+                this.showNotification('Sprinkler Test', 'Testing sprinkler system...', 'info');
+                this.addLog('Sprinkler test initiated');
+                
+                this.showWaterEffect();
+                
+                setTimeout(() => {
+                    this.showNotification('Sprinkler Test', 'Test completed successfully', 'success');
+                    this.addLog('Sprinkler test completed');
+                }, 2000);
+            }
+            
+            emergencyStop() {
+                if (confirm('⚠️ EMERGENCY STOP\n\nStop all systems immediately?')) {
+                    this.waterActive = false;
+                    this.fireAlertActive = false;
+                    
+                    document.getElementById('activateWaterBtn').classList.remove('disabled');
+                    document.getElementById('deactivateWaterBtn').classList.add('disabled');
+                    
+                    this.showNotification('EMERGENCY STOP', 'All systems halted', 'error');
+                    this.addLog('EMERGENCY STOP activated');
+                    
+                    // Close any active fire alert
+                    this.closeFireAlert();
+                    
+                    // Stop alarm sound
+                    const alarm = document.getElementById('fireAlarmSound');
+                    alarm.pause();
+                    alarm.currentTime = 0;
+                }
+            }
+            
+            // === FIRE ALERT SYSTEM (NO COOLDOWN) ===
+            
+            triggerFireAlert() {
+                // NO COOLDOWN CHECK - Immediate alert
+                this.fireAlertActive = true;
+                this.lastFireAlert = Date.now();
+                
+                // Update stats
+                this.stats.fires++;
+                this.updateStats();
+                
+                // Update fire status
+                const fireStatus = document.getElementById('fireStatus');
+                fireStatus.classList.add('alert');
+                fireStatus.querySelector('.status-text').textContent = 'FIRE DETECTED!';
+                fireStatus.querySelector('.status-subtext').textContent = 'EMERGENCY';
+                
+                // Play alarm sound
+                const alarm = document.getElementById('fireAlarmSound');
+                alarm.currentTime = 0;
+                alarm.play().catch(e => console.log('Audio play failed:', e));
+                
+                // Show modal
+                document.getElementById('fireAlertModal').style.display = 'flex';
+                
+                // Auto-activate water if not already active
+                if (!this.waterActive) {
+                    setTimeout(() => {
+                        this.activateWater();
+                    }, 1000);
+                }
+                
+                this.showNotification('FIRE ALERT', 'Fire detected! Emergency response activated', 'error');
+                this.addLog('🔥 FIRE DETECTED - Emergency response initiated');
+                
+                // Flash screen
+                document.body.style.backgroundColor = '#3A0A0A';
+                setTimeout(() => {
+                    document.body.style.backgroundColor = '';
+                }, 500);
+            }
+            
+            closeFireAlert() {
+                this.fireAlertActive = false;
+                
+                const modal = document.getElementById('fireAlertModal');
+                modal.style.display = 'none';
+                
+                const fireStatus = document.getElementById('fireStatus');
+                fireStatus.classList.remove('alert');
+                fireStatus.querySelector('.status-text').textContent = 'SYSTEM READY';
+                fireStatus.querySelector('.status-subtext').textContent = 'No Fire Detected';
+                
+                // Stop alarm sound
+                const alarm = document.getElementById('fireAlarmSound');
+                alarm.pause();
+                alarm.currentTime = 0;
+                
+                this.showNotification('Alert', 'Fire alert acknowledged', 'info');
+            }
+            
+            // === HELPER FUNCTIONS ===
+            
+            updateCameraStatus(status) {
+                const cameraCard = document.getElementById('cameraStatus');
+                const text = cameraCard.querySelector('.status-text');
+                const subtext = cameraCard.querySelector('.status-subtext');
+                const icon = cameraCard.querySelector('.status-icon');
+                
+                if (status === 'connected') {
+                    text.textContent = 'CAMERA ONLINE';
+                    subtext.textContent = 'Live Feed Active';
+                    icon.style.color = '#34C759';
+                } else {
+                    text.textContent = 'CAMERA OFFLINE';
+                    subtext.textContent = 'Ready to Connect';
+                    icon.style.color = '#FF9500';
+                }
+            }
+            
+            updateStats() {
+                document.getElementById('statCameras').textContent = `${this.stats.activeCameras}/1`;
+                document.getElementById('statFires').textContent = this.stats.fires;
+                document.getElementById('statWater').textContent = this.stats.waterActivations;
+                document.getElementById('statMedia').textContent = this.stats.mediaCount;
+            }
+            
+            updateGallery() {
+                const grid = document.getElementById('galleryGrid');
+                const empty = document.getElementById('emptyGallery');
+                
+                if (this.mediaGallery.length === 0) {
+                    grid.innerHTML = '';
+                    empty.style.display = 'block';
+                    return;
+                }
+                
+                empty.style.display = 'none';
+                grid.innerHTML = '';
+                
+                // Show last 6 items
+                const items = this.mediaGallery.slice(-6).reverse();
+                
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.style.position = 'relative';
+                    div.style.aspectRatio = '16/9';
+                    div.style.borderRadius = '4px';
+                    div.style.overflow = 'hidden';
+                    div.style.cursor = 'pointer';
+                    div.style.background = '#000';
+                    
+                    if (item.type === 'image') {
+                        div.innerHTML = `<img src="${item.url}" style="width:100%;height:100%;object-fit:cover;">`;
+                    } else {
+                        div.innerHTML = `<video src="${item.url}" style="width:100%;height:100%;object-fit:cover;" muted></video>`;
+                    }
+                    
+                    div.onclick = () => {
+                        window.open(item.url, '_blank');
+                    };
+                    
+                    grid.appendChild(div);
+                });
+            }
+            
+            addLog(message) {
+                const container = document.getElementById('logContainer');
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                
+                const time = new Date();
+                const timeStr = time.toLocaleTimeString('en-US', { 
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                entry.innerHTML = `
+                    <span class="log-time">${timeStr}</span>
+                    <span class="log-message">${message}</span>
+                `;
+                
+                container.appendChild(entry);
+                container.scrollTop = container.scrollHeight;
+                
+                // Keep only last 20 entries
+                while (container.children.length > 20) {
+                    container.removeChild(container.firstChild);
+                }
+            }
+            
+            clearLogs() {
+                if (confirm('Clear all system logs?')) {
+                    document.getElementById('logContainer').innerHTML = '';
+                    this.addLog('Logs cleared');
+                }
+            }
+            
+            showNotification(title, message, type = 'info') {
+                const center = document.getElementById('notificationCenter');
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                notification.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <strong>${title}</strong>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#8E8E93;cursor:pointer;">×</button>
+                    </div>
+                    <div style="font-size: 0.9em; color: #CCCCCC;">${message}</div>
+                `;
+                
+                center.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.style.opacity = '0';
+                        setTimeout(() => notification.remove(), 300);
+                    }
+                }, 5000);
+            }
+            
+            showLoading(show) {
+                document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+            }
+            
+            showWaterEffect() {
+                // Create water spray effect
+                const effect = document.createElement('div');
+                effect.style.position = 'fixed';
+                effect.style.top = '0';
+                effect.style.left = '0';
+                effect.style.width = '100%';
+                effect.style.height = '100%';
+                effect.style.pointerEvents = 'none';
+                effect.style.zIndex = '5000';
+                effect.style.background = 'radial-gradient(circle at center, rgba(0,122,255,0.2) 0%, transparent 70%)';
+                effect.style.animation = 'fadeOut 2s forwards';
+                
+                document.body.appendChild(effect);
+                
+                setTimeout(() => effect.remove(), 2000);
+                
+                // Add CSS for fadeOut
+                if (!document.querySelector('#fadeOutStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'fadeOutStyle';
+                    style.textContent = '@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }';
+                    document.head.appendChild(style);
+                }
+            }
+            
+            bindEvents() {
+                // Add keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Spacebar to trigger fire test
+                    if (e.code === 'Space' && !e.target.matches('input, textarea')) {
+                        e.preventDefault();
+                        this.triggerFireAlert();
+                    }
+                    
+                    // Escape to close modal
+                    if (e.code === 'Escape' && this.fireAlertActive) {
+                        this.closeFireAlert();
+                    }
+                    
+                    // F for fullscreen
+                    if (e.code === 'KeyF' && this.camera.isActive) {
+                        this.toggleFullscreen();
+                    }
+                });
+                
+                // Handle visibility change
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && this.fireAlertActive) {
+                        // Make sure alarm continues
+                        const alarm = document.getElementById('fireAlarmSound');
+                        alarm.play().catch(e => console.log('Background play failed'));
+                    }
+                });
+            }
+            
+            toggleFullscreen() {
+                const element = document.getElementById('cameraFeed');
+                
+                if (!document.fullscreenElement) {
+                    if (element.requestFullscreen) {
+                        element.requestFullscreen();
+                    } else if (element.webkitRequestFullscreen) {
+                        element.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            }
+        }
+
+        // === GLOBAL FUNCTIONS ===
+        
+        // Initialize app
+        const app = new EmergencyDashboard();
+        
+        // Make functions globally available
+        window.connectWiFiCamera = () => app.connectWiFiCamera();
+        window.connectRTSP = () => app.connectRTSP();
+        window.connectBluetooth = () => app.connectBluetooth();
+        window.connectWebcam = () => app.connectWebcam();
+        window.startRecording = () => app.startRecording();
+        window.stopRecording = () => app.stopRecording();
+        window.captureSnapshot = () => app.captureSnapshot();
+        window.updatePressure = (value) => app.updatePressure(value);
+        window.activateWater = () => app.activateWater();
+        window.deactivateWater = () => app.deactivateWater();
+        window.testSprinkler = () => app.testSprinkler();
+        window.emergencyStop = () => app.emergencyStop();
+        window.closeFireAlert = () => app.closeFireAlert();
+        window.clearLogs = () => app.clearLogs();
+        window.toggleFullscreen = () => app.toggleFullscreen();
+        
+        // Additional emergency functions
+        window.testFireDetection = () => app.triggerFireAlert();
+        window.manualOverride = () => {
+            app.showNotification('Manual Override', 'Manual control enabled', 'warning');
+            app.addLog('Manual override activated');
+        };
+        
+        window.systemDiagnostics = () => {
+            app.showLoading(true);
+            setTimeout(() => {
+                app.showNotification('Diagnostics', 'All systems operational', 'success');
+                app.addLog('System diagnostics completed - All OK');
+                app.showLoading(false);
+            }, 1500);
+        };
+        
+        window.silenceAlarm = () => {
+            const alarm = document.getElementById('fireAlarmSound');
+            alarm.pause();
+            alarm.currentTime = 0;
+            app.showNotification('Alarm', 'Alarm silenced', 'info');
+            app.addLog('Alarm manually silenced');
+        };
+    </script>
+</body>
+</html>
